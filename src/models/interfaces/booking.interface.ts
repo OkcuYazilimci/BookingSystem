@@ -1,8 +1,9 @@
-import { IGuest } from "./guest.interface";
+import { Types } from 'mongoose';
+import { IGuest } from './guest.interface';
 
 export interface IBooking {
-  userId: string;
-  roomId: string;
+  userId: Types.ObjectId;
+  roomId: Types.ObjectId;
   checkInDate: Date;
   checkOutDate: Date;
   guests: IGuest[];
