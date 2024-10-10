@@ -15,11 +15,8 @@ class RoomService {
     return room;
   }
 
-  async createRoom(type: string, price: number, available?: boolean) {
-    const roomData: { type: string; price: number; available?: boolean } = { type, price };
-    if (available !== undefined) {
-      roomData.available = available;
-    }
+  async createRoom(type: string, price: number) {
+    const roomData: { type: string; price: number} = { type, price };
   
     const room = new Room(roomData);
     await room.save();

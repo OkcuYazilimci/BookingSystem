@@ -25,10 +25,10 @@ export const checkDate = (checkInDate: string) => {
   const checkIn = new Date(checkInDate);
 
   if (isBefore(checkIn, today)) {
-    throw new Error('Cannot book a room in the past');
+    throw new Error('date cannot be past!');
   }
 
   if (isAfter(checkIn, oneYearFromNow)) {
-    throw new Error('Cannot book a room more than one year in advance');
+    throw new Error('Cannot book a room more than 12 months!');
   }
 };
