@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { HTTP_STATUS } from '../utils/constants/httpStatusCodes';
 
 interface AuthenticatedRequest extends Request {
   user?: any;
@@ -8,7 +9,7 @@ interface AuthenticatedRequest extends Request {
 export const auth = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const token = req.header('Authorization')?.split(' ')[1];
   if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
+    return res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'No token, authorization denied' });
   }
 
   try {
@@ -16,6 +17,6 @@ export const auth = (req: AuthenticatedRequest, res: Response, next: NextFunctio
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ message: 'Token is not valid' });
+    res.status(HTTP_STATUS.FORBIDDEN).json({ message: 'Token is not valid' });
   }
 };
