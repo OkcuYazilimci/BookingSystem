@@ -1,31 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-import { User } from '../models/user.model';
-import { passwordService } from '../services/passwordService';
-import AppError from '../utils/AppError';
+import { authService } from '../services/authService'
 import { HTTP_STATUS } from '../utils/constants/httpStatusCodes';
+import AppError from '../utils/AppError';
 
 export const registerUser = async (req: Request, res: Response, next: NextFunction) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { firstName, lastName, email, password, role } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return next(new AppError('User already exists', HTTP_STATUS.BAD_REQUEST));
-    }
-
-    const hashedPassword = await passwordService.hashPassword(password);
-
-    const user = new User({
-      firstName,
-      lastName,
-      email,
-      password: hashedPassword,
-      role: 'customer'
-    });
-
-    await user.save();
-    res.status(HTTP_STATUS.CREATED).json({ message: 'User registered successfully' });
+    const { token, user } = await authService.registerUser(firstName, lastName, email, password, role);
+    res.status(HTTP_STATUS.CREATED).json({ message: 'User registered successfully', token, user });
   } catch (err) {
+    if (!(err instanceof AppError)) {
+      return next(new AppError('Failed to register user', HTTP_STATUS.INTERNAL_SERVER_ERROR));
+    }
     next(err);
   }
 };
@@ -34,18 +21,12 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email }).select('+password');
-    if (!user) {
-      return next(new AppError('Invalid credentials', HTTP_STATUS.UNAUTHORIZED));
-    }
-
-    const isMatch = await passwordService.comparePassword(password, user.password);
-    if (!isMatch) {
-      return next(new AppError('Invalid credentials', HTTP_STATUS.UNAUTHORIZED));
-    }
-
-    res.status(HTTP_STATUS.OK).json({ message: 'Logged in successfully' });
+    const { token, user } = await authService.loginUser(email, password);
+    res.status(HTTP_STATUS.OK).json({ message: 'Logged in successfully', token, user });
   } catch (err) {
+    if (!(err instanceof AppError)) {
+      return next(new AppError('Failed to log in', HTTP_STATUS.INTERNAL_SERVER_ERROR));
+    }
     next(err);
   }
 };
