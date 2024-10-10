@@ -1,3 +1,5 @@
+import { addYears, isAfter, isBefore } from 'date-fns';
+
 export const calculateNumberOfDays = (checkInDate: string, checkOutDate: string): number => {
   const checkIn = new Date(checkInDate);
   const checkOut = new Date(checkOutDate);
@@ -15,4 +17,18 @@ export const calculateNumberOfDays = (checkInDate: string, checkOutDate: string)
 
 export const calculateTotalPrice = (roomPrice: number, numberOfDays: number): number => {
   return roomPrice * numberOfDays;
+};
+
+export const checkDate = (checkInDate: string) => {
+  const today = new Date();
+  const oneYearFromNow = addYears(today, 1);
+  const checkIn = new Date(checkInDate);
+
+  if (isBefore(checkIn, today)) {
+    throw new Error('Cannot book a room in the past');
+  }
+
+  if (isAfter(checkIn, oneYearFromNow)) {
+    throw new Error('Cannot book a room more than one year in advance');
+  }
 };

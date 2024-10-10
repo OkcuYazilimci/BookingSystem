@@ -3,7 +3,7 @@ import { CreateBookingDto } from '../models/dto/createBookingDto';
 import { Room } from '../models/room.model';
 import AppError from '../utils/AppError';
 import { HTTP_STATUS } from '../utils/constants/httpStatusCodes';
-import { calculateNumberOfDays, calculateTotalPrice } from '../utils/utils';
+import { calculateNumberOfDays, calculateTotalPrice, checkDate } from '../utils/utils';
 
 class BookingService {
   public async createBooking(bookingData: CreateBookingDto, userId: string) {
@@ -11,6 +11,8 @@ class BookingService {
     if (!room) {
       throw new AppError('Room not found', HTTP_STATUS.NOT_FOUND);
     }
+  
+    checkDate(bookingData.checkInDate);
   
     const isAvailable = await this.checkRoomAvailability(bookingData.roomId, bookingData.checkInDate, bookingData.checkOutDate);
     
