@@ -22,7 +22,7 @@ This API allows users to book rooms in a hotel, handling room availability, book
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/HotelBookingAPI.git
+git clone git@github.com:OkcuYazilimci/BookingSystemCase.git <fileName>
 ```
 
 ### 2. Install Dependencies
