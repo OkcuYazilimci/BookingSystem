@@ -1,3 +1,4 @@
+import { Booking } from '../models/booking.model';
 import { Room } from '../models/room.model';
 import AppError from '../utils/AppError';
 import { HTTP_STATUS } from '../utils/constants/httpStatusCodes';
@@ -21,6 +22,25 @@ class RoomService {
     const room = new Room(roomData);
     await room.save();
     return room;
+  }
+
+  public async checkRoomTypeAvailability(roomType: string, checkInDate: string, checkOutDate: string): Promise<string | null> {
+    const rooms = await Room.find({ roomType });
+    
+    for (const room of rooms) {
+      const existingBookings = await Booking.countDocuments({
+        roomId: room._id,
+        $or: [
+          { checkInDate: { $lt: checkOutDate }, checkOutDate: { $gt: checkInDate } }
+        ]
+      });
+
+      if (existingBookings === 0) {
+        return room._id.toString();
+      }
+    }
+  
+    return null;
   }
 
   async updateRoom(id: string, roomData: any) {

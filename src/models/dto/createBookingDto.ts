@@ -5,8 +5,8 @@ import 'reflect-metadata';
 
 export class CreateBookingDto {
   @IsNotEmpty()
-  @IsMongoId()
-  roomId!: string;
+  @IsString()
+  roomType!: string;
 
   @IsNotEmpty()
   @IsDateString()

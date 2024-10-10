@@ -4,20 +4,21 @@ import { Room } from '../models/room.model';
 import AppError from '../utils/AppError';
 import { HTTP_STATUS } from '../utils/constants/httpStatusCodes';
 import { calculateNumberOfDays, calculateTotalPrice, checkDate } from '../utils/utils';
+import { roomService } from './roomService';
 
 class BookingService {
   public async createBooking(bookingData: CreateBookingDto, userId: string) {
-    const room = await Room.findById(bookingData.roomId);
-    if (!room) {
-      throw new AppError('Room not found', HTTP_STATUS.NOT_FOUND);
-    }
-  
     checkDate(bookingData.checkInDate);
   
-    const isAvailable = await this.checkRoomAvailability(bookingData.roomId, bookingData.checkInDate, bookingData.checkOutDate);
-    
-    if (!isAvailable) {
-      throw new AppError('Room is not available for the selected dates', HTTP_STATUS.CONFLICT);
+    const availableRoomId = await roomService.checkRoomTypeAvailability(bookingData.roomType, bookingData.checkInDate, bookingData.checkOutDate);
+  
+    if (!availableRoomId) {
+      throw new AppError('No available rooms of this type for the selected dates', HTTP_STATUS.CONFLICT);
+    }
+  
+    const room = await Room.findById(availableRoomId);
+    if (!room) {
+      throw new AppError('Room not found', HTTP_STATUS.NOT_FOUND);
     }
   
     const numberOfDays = calculateNumberOfDays(bookingData.checkInDate, bookingData.checkOutDate);
@@ -25,7 +26,7 @@ class BookingService {
   
     const newBooking = new Booking({
       userId,
-      roomId: bookingData.roomId,
+      roomId: availableRoomId,
       checkInDate: bookingData.checkInDate,
       checkOutDate: bookingData.checkOutDate,
       guests: bookingData.guests,
@@ -35,20 +36,6 @@ class BookingService {
   
     await newBooking.save();
     return newBooking;
-  }
-
-  public async checkRoomAvailability(roomId: string, checkInDate: string, checkOutDate: string): Promise<boolean> {
-    const existingBookings = await Booking.find({
-      roomId: roomId,
-      $or: [
-        {
-          checkInDate: { $lt: checkOutDate },
-          checkOutDate: { $gt: checkInDate }
-        }
-      ]
-    })
-  
-    return existingBookings.length === 0;
   }
 
   public async getBookingById(bookingId: string) {
