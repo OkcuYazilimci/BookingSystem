@@ -1,10 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
 import { bookingService } from '../services/bookingService';
 import { HTTP_STATUS } from '../utils/constants/httpStatusCodes';
+import { plainToInstance } from 'class-transformer';
+import { CreateBookingDto } from '../models/dto/createBookingDto';
+import { validate } from 'class-validator';
 
-export const createBooking = async (req: Request, res: Response, next: NextFunction) => {
+export const createBooking = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const booking = await bookingService.createBooking(req.body);
+    const createBookingDto = plainToInstance(CreateBookingDto, req.body);
+
+    const errors = await validate(createBookingDto);
+    if (errors.length > 0) {
+      res.status(HTTP_STATUS.BAD_REQUEST).json({ message: 'Validation failed', errors });
+      return;
+    }
+
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(HTTP_STATUS.UNAUTHORIZED).json({ message: 'User not authenticated' });
+      return;
+    }
+
+    const booking = await bookingService.createBooking(createBookingDto, userId);
     res.status(HTTP_STATUS.CREATED).json(booking);
   } catch (error) {
     next(error);

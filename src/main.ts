@@ -2,8 +2,10 @@ import express from 'express';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import roomRoutes from './routes/roomRoutes';
+import bookingRoutes from './routes/bookingRoutes';
 import { errorHandler } from './middleware/errorHandlerMiddleware';
 import connectDB from './config/db';
+import 'reflect-metadata';
 
 dotenv.config();
 
@@ -14,6 +16,7 @@ connectDB();
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/rooms', roomRoutes);
+app.use('/api/v1/booking', bookingRoutes);
 
 app.use(errorHandler);
 
