@@ -12,7 +12,7 @@ This API allows users to book rooms in a hotel, handling room availability, book
 
 ## Tech Stack
 
--**Architecture**: N Layered Arhitecture
+- **Architecture**: N Layered Arhitecture
 - **Backend**: Node.js, Express.js, TypeScript, MongoDB, Mongoose
 - **Authentication**: JWT (JSON Web Token)
 - **Caching**: Redis
