@@ -31,8 +31,12 @@ class RoomService {
             return room;
         });
     }
-    createRoom(roomData) {
+    createRoom(type, price, available) {
         return __awaiter(this, void 0, void 0, function* () {
+            const roomData = { type, price };
+            if (available !== undefined) {
+                roomData.available = available;
+            }
             const room = new room_model_1.Room(roomData);
             yield room.save();
             return room;

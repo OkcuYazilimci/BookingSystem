@@ -13,9 +13,9 @@ exports.loginUser = exports.registerUser = void 0;
 const authService_1 = require("../services/authService");
 const httpStatusCodes_1 = require("../utils/constants/httpStatusCodes");
 const registerUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstName, lastName, email, password, role } = req.body;
+    const { firstName, lastName, email, password } = req.body;
     try {
-        const { token, user } = yield authService_1.authService.registerUser(firstName, lastName, email, password, role);
+        const { token, user } = yield authService_1.authService.registerUser(firstName, lastName, email, password);
         res.status(httpStatusCodes_1.HTTP_STATUS.CREATED)
             .header('Authorization', `Bearer ${token}`)
             .json({ message: 'User registered successfully', user });

@@ -12,7 +12,7 @@ app.use(express.json());
 
 connectDB();
 
-app.use('/api/v2/auth', authRoutes);
+app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/rooms', roomRoutes);
 
 app.use(errorHandler);

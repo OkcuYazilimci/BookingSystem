@@ -37,8 +37,9 @@ class RoomController {
     }
     createRoom(req, res, next) {
         return __awaiter(this, void 0, void 0, function* () {
+            const { type, price, available } = req.body;
             try {
-                const room = yield roomService_1.roomService.createRoom(req.body);
+                const room = yield roomService_1.roomService.createRoom(type, price, available);
                 res.status(httpStatusCodes_1.HTTP_STATUS.CREATED).json(room);
             }
             catch (err) {

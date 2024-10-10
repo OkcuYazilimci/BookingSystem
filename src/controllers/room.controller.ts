@@ -23,8 +23,10 @@ class RoomController {
   }
 
   async createRoom(req: Request, res: Response, next: NextFunction) {
+    const { type, price, available} = req.body;
+
     try {
-      const room = await roomService.createRoom(req.body);
+      const room = await roomService.createRoom(type, price, available);
       res.status(HTTP_STATUS.CREATED).json(room);
     } catch (err) {
       next(err);
