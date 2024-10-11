@@ -39,7 +39,7 @@ Update the .env file with your MongoDB, Redis connection strings, and JWT secret
 ```bash
 JWT_SECRET="ElegantOffice"
 PORT=5001
-MONGO_URI="mongodb+srv://ituumutuygun:123@elegantcluster.t4ft1.mongodb.net/?retryWrites=true&w=majority&appName=ElegantCluster"
+MONGO_URI="URI" //I terminated my cluster
 ```
 
 ### 4. Run the Application
