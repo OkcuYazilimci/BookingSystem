@@ -37,7 +37,7 @@ npm install
 Update the .env file with your MongoDB, Redis connection strings, and JWT secret.
 
 ```bash
-JWT_SECRET="ElegantOffice"
+JWT_SECRET="JWT Secret Key"
 PORT=5001
 MONGO_URI="URI" //I terminated my cluster
 ```
